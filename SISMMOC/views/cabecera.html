@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>SISMMOC</title>
+    <% include ../views/estilos.html %> 
+</head>
+<body class="hold-transition skin-blue sidebar-mini">
+<div class="wrapper">
+
+  <header class="main-header" >
+    <!-- Logo -->
+    <a href="index2.html" class="logo" >
+     
+      <span class="logo-mini"><b>SIS</b></span>
+      <span class="logo-lg"> <img src="imagenes/logoSismmoc.png" class="user-image" alt="LogoImage" height="65" width="150"></span>
+    </a>
+    <!-- Header Navbar: style can be found in header.less -->
+    <nav class="navbar navbar-static-top" ng-module="appCabecera" ng-controller="gestionCabecera" >
+      <!-- Sidebar toggle button-->
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+
+      <div class="navbar-custom-menu" ng-repeat="cabeceraUsuario in cabeceraUsuarios">
+        <ul class="nav navbar-nav">
+          <!-- Notifications: style can be found in dropdown.less 
+          <li class="dropdown notifications-menu">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <i class="fa fa-bell-o fa-lar"></i>
+              <span class="label label-warning">10</span>
+            </a>
+            <ul class="dropdown-menu">
+              <li class="header">You have 10 notifications</li>
+              <li>-->
+                <!-- inner menu: contains the actual data -
+                <ul class="menu">
+                  <li>
+                    <a href="#">
+                      <i class="fa fa-users text-aqua"></i> 5 new members joined today
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
+                      page and may cause design problems
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="fa fa-users text-red"></i> 5 new members joined
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="fa fa-shopping-cart text-green"></i> 25 sales made
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#">
+                      <i class="fa fa-user text-red"></i> You changed your username
+                    </a>
+                  </li>
+                </ul>
+              </li>
+              <li class="footer"><a href="#">View all</a></li>
+            </ul>
+          </li>-->
+          <!-- User Account: style can be found in dropdown.less -->
+          <li class="dropdown user user-menu" >
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+              <img ng-if="cabeceraUsuario.usu_foto == null" class="user-image" alt="User Image" src="imagenes/users/user2.png">
+              <img ng-if="cabeceraUsuario.usu_foto != null" class="user-image" alt="User Image" ng-src="imagenes/users/{{ cabeceraUsuario.usu_foto }}">
+              <span class="hidden-xs" >{{ cabeceraUsuario.usu_nombre }}  {{ cabeceraUsuario.usu_apellido }}</span>
+            </a>
+            <ul class="dropdown-menu">
+              <!-- User image -->
+              <li class="user-header">
+                <img ng-if="cabeceraUsuario.usu_foto == null" class="img-circle" alt="User Image" src="imagenes/users/user2.png">
+                <img ng-if="cabeceraUsuario.usu_foto != null" class="img-circle" alt="User Image" ng-src="imagenes/users/{{ cabeceraUsuario.usu_foto }}">
+                <p>
+                  {{ cabeceraUsuario.usu_nombre }}  {{ cabeceraUsuario.usu_apellido }} - {{ cabeceraUsuario.emp_nombre }}
+                  <p id="fecha"></p>
+                </p>
+              </li>
+              <!-- Menu Footer-->
+              <li class="user-footer">
+                <div class="pull-left">
+                  <a href="/perfil" class="btn btn-info">Perfil</a>
+                </div>
+                <div class="pull-right">
+                  <a href="/" class="btn btn-danger">Salir</a>
+                </div>
+              </li>
+            </ul>
+          </li>
+          <!-- Control Sidebar Toggle Button -->
+          <li>
+            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+  <!-- Left side column. contains the logo and sidebar -->
+  <aside class="main-sidebar "  ng-module="appCabecera" ng-controller="gestionCabecera" >
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar " ng-repeat="cabeceraUsuario in cabeceraUsuarios">
+      <!-- Sidebar user panel -->
+      <div class="user-panel">
+        <div class="pull-left image">
+          <img ng-if="cabeceraUsuario.emp_logo == null" class="img-circle" alt="User Image" src="imagenes/empresas/empresa.png">
+          <img ng-if="cabeceraUsuario.emp_logo != null" class="img-circle" alt="User Image" ng-src="imagenes/empresas/{{ cabeceraUsuario.emp_logo }}">
+         <!-- <img src="imagenes/empresas/empresa.png" class="img-circle" alt="User Image">-->
+        </div>
+        <div class="pull-left info">
+          <p> {{ cabeceraUsuario.emp_nombre }}</p>
+        </div>
+      </div>
+      <!-- sidebar menu: : style can be found in sidebar.less -->
+      <ul class="sidebar-menu">
+        <li class="header">MENU</li>
+        <li ng-if="cabeceraUsuario.usu_tipo == 's' || cabeceraUsuario.usu_tipo == 'a'"><a href="/usuarios"><i class="fa fa-user fa-lar"></i> <span>&nbsp;Usuarios</span></a></li>
+        <li ng-if="cabeceraUsuario.usu_tipo == 's'"><a href="/empresas"><i class="fa fa-institution fa-lar"></i> <span>&nbsp;Empresas</span></a></li>
+        <li><a href="/estMeteorologica"><i class="fa fa-map-signs fa-lar"></i> <span>&nbsp;Estación Meteorológica</span></a></li>
+        <li ng-if="cabeceraUsuario.usu_tipo == 's' || cabeceraUsuario.usu_tipo == 'a'">
+          <a href="#">
+            <i class="fa fa-server fa-lar"></i> <span>&nbsp;Dispositivos</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right fa-lar"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+            <li><a href="/motes"><i class="fa fa-building-o"></i> Motes</a></li>
+            <li><a href="/sensores"><i class="fa fa-rss"></i> Sensores</a></li>
+          </ul>
+        </li>
+        <li><a href="/monitoreo"><i class="fa fa-area-chart fa-lar"></i> <span>&nbsp;Monitoreo</span></a></li>
+        <li><a href="/dashboard"><i class="fa fa-dashboard fa-lar"></i> <span>&nbsp;Dashboard</span></a></li>
+        <li>
+          <a href="#">
+            <i class="fa fa-files-o fa-lar"></i> <span>&nbsp;Reseña</span>
+            <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right fa-lar"></i>
+            </span>
+          </a>
+          <ul class="treeview-menu">
+        <!--    <li><a href=""><i class="fa fa-reorder "></i> Leturas</a></li>-->
+            <li><a href=""><i class="fa fa-file-text-o"></i> Reportes</a></li>
+            <li ng-if="cabeceraUsuario.usu_tipo == 's' || cabeceraUsuario.usu_tipo == 'a'"><a href="/historial"><i class="fa fa-history"></i> Historial</a></li>
+          </ul>
+        </li>  
+      </ul>
+    </section>
+    <!-- /.sidebar -->
+  </aside>
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper ">
+<script type="text/javascript">
+  var meses = new Array ("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");
+  var f=new Date();
+  document.getElementById('fecha').innerHTML=f.getDate() + " de " + meses[f.getMonth()] + " de " + f.getFullYear()
+</script>
+<script type="text/javascript" src="js/angular/angular.min.js"></script>
+<script src="js/angular/angular.ng-modules.js"></script>
+<script type="text/javascript" src="js/controllers/cabeceraController.js"></script>

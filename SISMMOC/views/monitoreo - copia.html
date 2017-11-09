@@ -1,0 +1,508 @@
+<% include ../views/cabecera.html %> 
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  <!--  <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>-->
+    <script src="js/highcharts.js"></script> 
+    <ul class="nav nav-tabs">
+      <li ><a href="#">Home</a></li>
+      <li><a href="#">Menu 2</a></li>
+      <li><a href="#">Menu 3</a></li>
+    </ul>
+    <div style="padding-top: 30px; padding-left: 30px; padding-right: 30px;   padding-bottom: 60px;">
+      <div id="chart" style="width:100%; height:400px;"></div>
+    </div>
+<script>
+    var socket = io();
+    var condicionMEdidas=false;
+    // Creo un nuevo objeto 'Chart'
+    var chart;
+    var contadorGRafico=1;
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart', 
+            defaultSeriesType: 'spline',
+            events: {
+                load: function() {
+                    // Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    socket.on('lecturaMote1', function (id, dato) {
+                      if(parseInt(id.toString())==1){
+                      var series = chart.series[0];
+
+                      series.addPoint([new Date().getTime(), parseFloat(dato.toString())]);
+                      contadorGRafico++;
+                      if(contadorGRafico==21){
+                        condicionMEdidas=true;
+                      }
+                      if(condicionMEdidas){
+                        series.data[0].remove(false);
+                      }
+                    }
+                    });
+                }
+            }
+        },
+        rangeSelector : {
+            selected : 100
+        },
+        title: {
+            text: 'Sensor de Temperatura'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            title: {
+                text: 'Temperatura',
+                margin: 80
+            }
+        },
+        series: [{
+            name: 'Temperatura',
+            length: 4,
+            data: []
+        }]
+    });
+    </script>
+
+<% include ../views/piePagina.html %> 
+
+------------------------ copia ultima monitoreo--------------------------
+<% include ../views/cabecera.html %> 
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  <!--  <script src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="js/highcharts.js"></script> -->
+
+ <section class="content">
+    <ul class="nav nav-tabs">
+      <li ><a href="#">Home</a></li>
+      <li><a href="#">Menu 2</a></li>
+      <li><a href="#">Menu 3</a></li>
+    </ul>
+    <div style="padding-top: 30px; padding-left: 30px; padding-right: 30px;   padding-bottom: 60px;">
+
+    <div id="container" style="min-width: 310px; max-width: 400px; height: 300px; margin: 0 auto"></div>
+      <div id="chart" style="width:100%; height:400px;"></div>
+    </div>
+    </section>
+<script>
+
+    $(function () {
+
+    Highcharts.chart('container', {
+
+        chart: {
+            type: 'gauge',
+            plotBackgroundColor: null,
+            plotBackgroundImage: null,
+            plotBorderWidth: 0,
+            plotShadow: false
+        },
+
+        title: {
+            text: 'Temperatura'
+        },
+
+        pane: {
+            startAngle: -150,
+            endAngle: 150,
+            background: [{
+                backgroundColor: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0, '#FFF'],
+                        [1, '#333']
+                    ]
+                },
+                borderWidth: 0,
+                outerRadius: '109%'
+            }, {
+                backgroundColor: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0, '#333'],
+                        [1, '#FFF']
+                    ]
+                },
+                borderWidth: 1,
+                outerRadius: '107%'
+            }, {
+                // default background
+            }, {
+                backgroundColor: '#DDD',
+                borderWidth: 0,
+                outerRadius: '105%',
+                innerRadius: '103%'
+            }]
+        },
+
+        // the value axis
+        yAxis: {
+            min: 0,
+            max: 100,
+
+            minorTickInterval: 'auto',
+            minorTickWidth: 1,
+            minorTickLength: 10,
+            minorTickPosition: 'inside',
+            minorTickColor: '#666',
+
+            tickPixelInterval: 30,
+            tickWidth: 2,
+            tickPosition: 'inside',
+            tickLength: 10,
+            tickColor: '#666',
+            labels: {
+                step: 2,
+                rotation: 'auto'
+            },
+            title: {
+                text: 'C°'
+            },
+            plotBands: [{
+                from: 0,
+                to: 31,
+                color: '#55BF3B' // green
+            }, {
+                from: 31,
+                to: 60,
+                color: '#DDDF0D' // yellow
+            }, {
+                from: 60,
+                to: 100,
+                color: '#DF5353' // red
+            }]
+        },
+
+        series: [{
+            name: 'Speed',
+            data: [28.3],
+            tooltip: {
+                valueSuffix: ' km/h'
+            }
+        }]
+
+    },
+    // Add some life
+    function (chart) {
+        if (!chart.renderer.forExport) {
+            setInterval(function () {
+                var point = chart.series[0].points[0],
+                    newVal,
+                    inc = Math.round((Math.random() - 0.5) * 20);
+
+                newVal = point.y + inc;
+                if (newVal < 0 || newVal > 100) {
+                    newVal = point.y - inc;
+                }
+
+                point.update(newVal);
+
+            }, 3000);
+        }
+    });
+});
+
+    var socket = io();
+    var condicionMEdidas=false;
+    // Creo un nuevo objeto 'Chart'
+    var chart;
+    var contadorGRafico=1;
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart', 
+            defaultSeriesType: 'spline',
+            events: {
+                load: function() {
+                    // Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    socket.on('lecturaMote1', function (id, dato) {
+                      if(parseInt(id.toString())==1){
+                      var series = chart.series[0];
+
+                      series.addPoint([new Date().getTime(), parseFloat(dato.toString())]);
+                      contadorGRafico++;
+                      if(contadorGRafico==21){
+                        condicionMEdidas=true;
+                      }
+                      if(condicionMEdidas){
+                        series.data[0].remove(false);
+                      }
+                    }
+                    });
+                }
+            }
+        },
+        rangeSelector : {
+            selected : 100
+        },
+        title: {
+            text: 'Sensor de Temperatura'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            title: {
+                text: 'Temperatura',
+                margin: 80
+            }
+        },
+        series: [{
+            name: 'Temperatura',
+            length: 4,
+            data: []
+        }]
+    });
+    </script>
+<% include piePagina.html %>
+//////////////////////////////////////////////////////////////////////////// dashboar respaldo////////////////////////
+<% include cabecera.html %> 
+
+    
+    <link rel="stylesheet" href="css/weather-icons/weather-icons.css">
+    <link rel="stylesheet" href="css/weather-icons/weather-icons-wind.css">
+    <link rel="stylesheet" href="css/jquery.circliful.css">
+    <link href="assets/css/main.css" rel="stylesheet">
+    <link href="assets/css/font-style.css" rel="stylesheet">
+<section class="content" ng-app="appMonitoreo" ng-controller="gestionMonitoreo">
+    <div class="nav-tabs-custom bg-gray disabled color-palette">
+        <ul class="nav nav-tabs">
+          <li ng-repeat="estMeterologica in estMeterologicas"><a href="#{{ estMeterologica.est_id }}" data-toggle="tab">{{ estMeterologica.est_nombre }}</a></li>
+        </ul>
+        <div class="tab-content ">
+            <div ng-repeat="estMeterologica in estMeterologicas" class="tab-pane" id="{{ estMeterologica.est_id }}">
+                <!--<b>{{ estMeterologica.est_nombre  }}:</b>-->
+                <div class="row">
+                    <div class="col-xs-6" ng-repeat="sensor in sensores" ng-if="estMeterologica.est_id == sensor.est_id" >
+                        <div style="width: 38% !important;" id="chart" onfocus="cargarMonitoreo()"></div>                
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title text-center">USUARIO</h3>
+
+        </div>
+        <div class="panel-body">
+
+        </div>
+    </div>
+    <!--
+    <div class="mainbody-section text-center">
+        <div class="container">        
+            <div class="row">-->
+            <!--<div id="mapa"></div>-->
+      <!--          <div class="col-sm-3">
+                    <div class="dash-unit">
+                        <dtitle>Humedad</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <div id="test-circle" ></div>
+                        </div>   
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="dash-unit">
+                        <dtitle>Tiempo</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <div class="intro-icons" style="font-size: 75px"><i class="wi wi-cloudy"></i></div>
+                                    <div class="text-temp" style="font-size: 55px"> 25°C</div>
+                                    Miercoles
+                        </div>   
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="dash-unit">
+                        <dtitle>Luz</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <canvas id="cvsL" width="260" height="200">
+                                [No canvas support]
+                            </canvas>
+                        </div>    
+                    </div>
+                </div>
+                </div>
+                <div class="row">
+                <div class="col-sm-3 col-lg-3">
+                    <div class="dash-unit" style="height:300px;">
+                        <dtitle>Presión Atmosférica</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <canvas id="cvs" width="140" height="250">
+                            [No canvas support]
+                        </canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="dash-unit" style="height:300px;">
+                        <dtitle>Lluvia</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <div class="intro-icons" style="font-size: 75px"><i class="wi wi-hail"></i></div>
+                            <div class="text-temp"> LLUVIA</div>
+                            <div class="info-user">
+                                <span aria-hidden="true" class="fa fa-times" style="font-size: 70px; color: #DF3B3B"></span>
+                                <span aria-hidden="true" class="fa fa-check" style="font-size: 70px; color: #14FF53"></span>
+                            </div>                    
+                        </div>   
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-3">
+                    <div class="dash-unit" style="height:300px;">
+                        <dtitle>Temperatura</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <canvas id="cvsT" width="100" height="260">
+                                [No canvas support]
+                            </canvas>
+                        </div>     
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>-->
+</section>
+<% include piePagina.html %> 
+
+<script src="js/jquery.circliful.js"></script>
+<script src="js/RGraph.common.core.js"></script>
+<script src="js/RGraph.bar.js"></script>
+<script src="js/RGraph.thermometer.js"></script>
+<script src="js/RGraph.semicircularprogress.js"></script>
+<script src="js/RGraph.common.effects.js"></script>
+<script src="js/RGraph.vprogress.js"></script>
+<script src="js/RGraph.common.dynamic.js"></script>
+<script src="js/RGraph.meter.js"></script>
+<script type="text/javascript" src="js/controllers/monitoreoController.js"></script>
+
+<script type="text/javascript">
+    function initialize() {
+      var marcadores = [
+        ['Machala', -3.251284, -79.909703],
+        ['Quito', -0.208421, -78.564876],
+        ['Guayaquil', -1.867026, -80.067814]
+      ];
+      var map = new google.maps.Map(document.getElementById('mapa'), {
+        zoom: 6,
+        center: new google.maps.LatLng(-1.4915563,-78.3821154),
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+      var infowindow = new google.maps.InfoWindow();
+      var marker, i;
+      for (i = 0; i < marcadores.length; i++) {  
+        marker = new google.maps.Marker({
+          position: new google.maps.LatLng(marcadores[i][1], marcadores[i][2]),
+          map: map
+        });
+        google.maps.event.addListener(marker, 'click', (function(marker, i) {
+          return function() {
+            infowindow.setContent(marcadores[i][0]);
+            infowindow.open(map, marker);
+          }
+        })(marker, i));
+      }
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+<script>
+    window.onload = function ()
+    {
+        var vprogress = new RGraph.VProgress({
+            id: 'cvs',
+            min: 0,
+            max: 10,
+            value: 6,
+            options: {
+                gutterRight:35,
+                textSize: 12,
+                tickmarks: 100,
+                numticks: 20,
+                unitsPost: ' Pa',
+                textAccessible: true,
+                scaleVisible: true,
+                textColor: 'white',
+                margin: 5,
+                colors: ['gradient(RoyalBlue)']
+            }
+        }).grow();       
+        /*setTimeout(function ()
+        {
+            vprogress.value = 1;
+            vprogress.grow();
+        }, 3500);*/
+        var value = RGraph.random(0, 50)        
+        if (typeof thermometer == 'undefined') {
+            thermometer = new RGraph.Thermometer({
+                id: 'cvsT',
+                min: -10,
+                max: 50,
+                value: value,
+                options: {
+                    textAccessible: true,
+                    scaleVisible: true,
+                    unitsPost: '°C',
+                    textColor: 'white',
+                    labelColor: 'red',
+                    colors: ['gradient(RoyalBlue)']
+                }
+            });
+        } else {
+            thermometer.value = value;
+        }
+        thermometer.grow()       
+        /*setTimeout(function ()
+        {
+            RGraph.clear(thermometer.canvas);
+            func();
+        }, 5000);*/
+        new RGraph.SemiCircularProgress ({
+        id: 'cvsL',
+        min: 0,
+        max: 100,
+        value: 79,
+        options: {
+            scaleDecimals: 1,
+            unitsPost: 'LX',
+            colors: ['gradient(RoyalBlue:blue)'],
+            textColor: 'white',
+            labelsCenterSize: 20
+            }
+        }).grow({frames: 30});
+        };
+</script>
+
+<script type="text/javascript">
+
+ $( document ).ready(function() { // 6,32 5,38 2,34
+        $("#test-circle").circliful({
+            animation: 1,
+            animationStep: 5,
+            foregroundBorderWidth: 15,
+            backgroundBorderWidth: 15,
+            percent: 68,
+            textSize: 28,
+            textStyle: 'font-size: 12px;',
+            textColor: '#666',
+            multiPercentage: 1,
+            percentages: [10, 20, 30]
+        });
+    });
+
+</script>

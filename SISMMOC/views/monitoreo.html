@@ -1,0 +1,377 @@
+<% include ../views/cabecera.html %> 
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="js/controllers/monitoreoController.js"></script>
+ <section class="content" ng-app="appMonitoreo" ng-controller="gestionMonitoreo">
+    <div class="nav-tabs-custom bg-gray disabled color-palette">
+        <ul class="nav nav-tabs">
+          <li ng-repeat="estMeterologica in estMeterologicas"><a href="#{{ estMeterologica.est_id }}" data-toggle="tab">{{ estMeterologica.est_nombre }}</a></li>
+        </ul>
+        <div class="tab-content ">
+            <div ng-repeat="estMeterologica in estMeterologicas" class="tab-pane" id="{{ estMeterologica.est_id }}">
+                <!--<b>{{ estMeterologica.est_nombre  }}:</b>-->
+             <!--  <div class="row">
+                    <div class="col-xs-6" ng-repeat="sensor in sensores"  ng-if="estMeterologica.est_id == sensor.est_id">
+                        <div style="width: 38% !important;" id="chart"></div>
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+               <div class="row">
+                    <div class="col-xs-6">
+                        <div id="chart"></div>                
+                    </div>
+                    <div class="col-xs-6">
+                        <div id="chart2"></div>                
+                    </div>
+                </div><br>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div id="chart3"></div>                
+                    </div>
+                    <div class="col-xs-6">
+                        <div id="chart4"></div>                
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6">
+                        <div id="chart5"></div>                
+                    </div>
+                </div>
+<!--
+    <div style="padding-top: 30px; padding-left: 30px; padding-right: 30px;   padding-bottom: 60px;">
+        <div id="chart" style="width:100%; height:400px;"></div>
+    </div>-->
+    </section>
+<script>
+function cargarMonitoreo() {
+    alert('id_monitoreo');
+}
+
+//$('#rempresa').click(function () { 
+    function getRandomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    var socket = io();
+    var condicionMEdidas1=false;
+    var condicionMEdidas2=false;
+    var condicionMEdidas3=false;
+    var condicionMEdidas4=false;
+    var condicionMEdidas5=false;
+    // Creo un nuevo objeto 'Chart'
+    var chart;
+    var contadorGRafico1=1;
+    var contadorGRafico2=1;
+    var contadorGRafico3=1;
+    var contadorGRafico4=1;
+    var contadorGRafico5=1;
+    chart = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart', 
+            defaultSeriesType: 'spline',
+            events: {
+                load: function() {           
+                    // Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    socket.on('lecturaMote1', function (id, dato) {
+                      if(parseInt(id.toString())==1){
+                      var series = chart.series[0];
+
+                      series.addPoint([new Date().getTime(), parseFloat(dato.toString())]);
+                      contadorGRafico1++;
+                      if(contadorGRafico1==13){
+                        condicionMEdidas1=true;
+                      }
+                      if(condicionMEdidas1){
+                        series.data[0].remove(false);
+                      }
+                    }
+                    });
+                }
+            }
+        },
+        rangeSelector : {
+            selected : 100
+        },
+        title: {
+            text: 'Sensor de Temperatura'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            title: {
+                text: 'Temperatura',
+                margin: 80
+            }
+        },
+        series: [{
+            name: 'Temperatura',
+            length: 4,
+            data: []
+        }]
+    });
+
+    var chart2;
+    chart2 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart2', 
+            defaultSeriesType: 'spline',
+            events: {
+                load: function() {
+            /*        var t;
+                    var timer_is_on = 0;
+                    t = setTimeout(function(){ timedCount(); }, 1000);
+                    function timedCount() {
+                        // alert('si');
+                        t = setTimeout(function(){ timedCount() }, 1000);
+                        //alert('a');
+                        series = chart2.series[0];
+                        series.addPoint([new Date().getTime(), getRandomInt(1,10)]);
+                        contadorGRafico2++;
+                        if(contadorGRafico2==21){
+                            condicionMEdidas2=true;
+                        }
+                         if(condicionMEdidas2){
+                            series.data[0].remove(false);
+                        }
+                    }*/
+                    // Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    socket.on('lecturaMote1', function (id, dato) {
+                      if(parseInt(id.toString())==2){
+                      var series = chart2.series[0];
+
+                      series.addPoint([new Date().getTime(), parseFloat(dato.toString())]);
+                      contadorGRafico2++;
+                      if(contadorGRafico2==13){
+                        condicionMEdidas2=true;
+                      }
+                      if(condicionMEdidas2){
+                        series.data[0].remove(false);
+                      }
+                    }
+                    });
+                }
+            }
+        },
+        rangeSelector : {
+            selected : 100
+        },
+        title: {
+            text: 'Sensor de Humedad'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            title: {
+                text: 'Humedad',
+                margin: 80
+            }
+        },
+        series: [{
+            name: 'Humedad',
+            length: 4,
+            data: []
+        }]
+    });
+    var chart3;
+    chart3 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart3', 
+            defaultSeriesType: 'spline',
+            events: {
+                load: function() {
+              /*      var t;
+                    var timer_is_on = 0;
+                    t = setTimeout(function(){ timedCount(); }, 1000);
+                    function timedCount() {
+                        // alert('si');
+                        t = setTimeout(function(){ timedCount() }, 1000);
+                        //alert('a');
+                        series = chart3.series[0];
+                        series.addPoint([new Date().getTime(), getRandomInt(0,300)]);
+                        contadorGRafico3++;
+                        if(contadorGRafico3==21){
+                            condicionMEdidas3=true;
+                        }
+                         if(condicionMEdidas3){
+                            series.data[0].remove(false);
+                        }
+                    }*/
+                    // Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    socket.on('lecturaMote1', function (id, dato) {
+                      if(parseInt(id.toString())==3){
+                      var series = chart3.series[0];
+
+                      series.addPoint([new Date().getTime(), parseFloat(dato.toString())]);
+                      contadorGRafico3++;
+                      if(contadorGRafico3==13){
+                        condicionMEdidas3=true;
+                      }
+                      if(condicionMEdidas3){
+                        series.data[0].remove(false);
+                      }
+                    }
+                    });
+                }
+            }
+        },
+        rangeSelector : {
+            selected : 100
+        },
+        title: {
+            text: 'Sensor de Luz'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            title: {
+                text: 'Luz',
+                margin: 80
+            }
+        },
+        series: [{
+            name: 'Luz',
+            length: 4,
+            data: []
+        }]
+    });
+    var chart4;
+    chart4 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart4', 
+            defaultSeriesType: 'spline',
+            events: {
+                load: function() {
+              /*      var t;
+                    var timer_is_on = 0;
+                    t = setTimeout(function(){ timedCount(); }, 1000);
+                    function timedCount() {
+                        // alert('si');
+                        t = setTimeout(function(){ timedCount() }, 1000);
+                        //alert('a');
+                        series = chart4.series[0];
+                        series.addPoint([new Date().getTime(), getRandomInt(30,100)]);
+                        contadorGRafico4++;
+                        if(contadorGRafico4==21){
+                            condicionMEdidas4=true;
+                        }
+                         if(condicionMEdidas4){
+                            series.data[0].remove(false);
+                        }
+                    }*/
+                    // Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    socket.on('lecturaMote2', function (id, dato) {
+                      if(parseInt(id.toString())==4){
+                      var series = chart4.series[0];
+
+                      series.addPoint([new Date().getTime(), parseFloat(dato.toString())]);
+                      contadorGRafico4++;
+                      if(contadorGRafico4==13){
+                        condicionMEdidas4=true;
+                      }
+                      if(condicionMEdidas4){
+                        series.data[0].remove(false);
+                      }
+                    }
+                    });
+                }
+            }
+        },
+        rangeSelector : {
+            selected : 100
+        },
+        title: {
+            text: 'Sensor de Presión Atmosférica'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            title: {
+                text: 'Presión Atmosférica',
+                margin: 80
+            }
+        },
+        series: [{
+            name: 'Presión Atmosférica',
+            length: 4,
+            data: []
+        }]
+    });
+        var chart5;
+    chart5 = new Highcharts.Chart({
+        chart: {
+            renderTo: 'chart5', 
+            defaultSeriesType: 'spline',
+            events: {
+                load: function() {
+                    // Cada vez que reciba un valor desde el socket, lo meto en la gráfica
+                    socket.on('lecturaMote2', function (id, dato) {
+                      if(parseInt(id.toString())==5){
+                      var series = chart5.series[0];
+
+                      series.addPoint([new Date().getTime(), parseFloat(dato.toString())]);
+                      contadorGRafico5++;
+                      if(contadorGRafico5==13){
+                        condicionMEdidas5=true;
+                      }
+                      if(condicionMEdidas5){
+                        series.data[0].remove(false);
+                      }
+                    }
+                    });
+                }
+            }
+        },
+        rangeSelector : {
+            selected : 100
+        },
+        title: {
+            text: 'Sensor de Llluvia'
+        },
+        xAxis: {
+            type: 'datetime',
+            tickPixelInterval: 150,
+            maxZoom: 20 * 1000
+        },
+        yAxis: {
+            minPadding: 0.2,
+            maxPadding: 0.2,
+            title: {
+                text: 'Lluvia',
+                margin: 80
+            }
+        },
+        series: [{
+            name: 'Lluvia',
+            length: 4,
+            data: []
+        }]
+    });
+//});
+    </script>
+<% include piePagina.html %>

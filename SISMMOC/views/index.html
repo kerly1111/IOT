@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>SISMMOC</title>
+        <!--<link rel="stylesheet" href="dist/css/AdminLTE.min.css">-->
+        <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/font-awesome.min.css" rel="stylesheet">
+        <link href="css/animate.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+        <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>
+        <link rel="stylesheet" href="css/weather-icons/weather-icons.css">
+        <link rel="stylesheet" href="css/weather-icons/weather-icons-wind.css">
+        <link rel="stylesheet" href="css/material-design-iconic-font.min.css">
+        <link rel="stylesheet" href="css/jquery.circliful.css">
+        <link href="assets/css/main.css" rel="stylesheet">
+        <link href="assets/css/font-style.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+    </head>
+    <body>
+    <aside class="main-sidebar " >
+        <section class="sidebar ">
+          <div class="user-panel text-center">
+          <br>      
+          <div class="col-md-6">   
+                <div class="col-md-6"> 
+                    <div class="panel panel-info"> 
+                        <center>          
+                            <img src="imagenes/logoSismmoc.png" class="img-responsive" alt="">
+                        </center> 
+                    </div>     
+                </div>
+                <div class="col-md-2">
+                    <div class="menu-item light-orange responsive-2">
+                    <a href="/logeo" data-toggle="modal">
+                        <i class="fa fa-users"></i>
+                        <p>Login</p>
+                    </a>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="menu-item light-red">
+                    <a href="#about-modal" data-toggle="modal">
+                        <i class="fa fa-user"></i>
+                        <p>Nosotros</p>
+                    </a>
+                    </div>
+                </div> 
+                <div class="col-md-2">                 
+                <div class="menu-item color">
+                    <a href="#contact-modal" data-toggle="modal">
+                        <i class="fa fa-envelope-o"></i>
+                        <p style="font-size: 16px;">Contactanos</p>
+                    </a>
+                </div> 
+                </div> 
+            <div class="col-sm-12" ng-app="appEstMeteorologicas" ng-controller="gestionEstMeteorologicas">
+                <div class="dash-unit" height="300" style="height: 360px;">
+                    <dtitle>Ubicación</dtitle>{{estMeteorologica.est_id}}
+                    <hr>
+                    <div class="thumbnail" >
+                        <div id="map" style=" width: 395; height: 300px;"> 
+                        </div><!-- /thumbnail -->     
+                    </div>
+                </div>
+            </div>
+         <!--   <div class="col-md-6">                                       
+                <div class="menu-item green responsive">
+                    <a href="#service-modal" data-toggle="modal">
+                        <i class="fa fa-area-chart"></i>
+                        <p>Servicios</p>
+                    </a>
+                </div>                                              
+                
+                </div>-->     
+          </div>            
+        </section>
+    </aside>
+    <div class="text-center">
+        <div class="container">  
+                <div class="col-sm-3">
+                    <div class="dash-unit">
+                        <dtitle>Humedad</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <div id="test-circle" ></div>
+                        </div><!-- /thumbnail -->     
+                    </div>
+                </div>                
+                <div class="col-sm-3">
+                    <div class="dash-unit">
+                        <dtitle>Luz</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <canvas id="cvsL" width="260" height="200">
+                                [No canvas support]
+                            </canvas>
+                        </div><!-- /thumbnail -->     
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-3" >
+                    <div class="dash-unit"  style="height:310px;">
+                        <dtitle>Temperatura</dtitle>
+                        <hr>
+                        <label id=lablTemp>0°C</label>
+                        <div class="thumbnail">
+                                   <canvas id="cvsT" width="100" height="240">
+                                [No canvas support]
+                            </canvas>
+                        </div><!-- /thumbnail -->     
+                    </div>
+                </div>
+                <div class="col-sm-3 col-lg-3">
+                    <div class="dash-unit" style="height:300px;">
+                        <dtitle>Presión Atmosférica</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <canvas id="cvs" width="140" height="250">
+                            [No canvas support]
+                        </canvas>
+                        </div><!-- /thumbnail -->     
+                    </div>
+                </div>
+          <!--      
+                        <div class="col-sm-2">
+                    <div class="dash-unit">
+                        <dtitle>Tiempo</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <div class="intro-icons"><i class="wi wi-cloudy"></i></div>
+                                    <div class="text-temp"> 25°C</div>
+                                    Miercoles
+                        </div>     
+                    </div>
+                </div>
+          <div class="col-sm-2">
+                    <div class="dash-unit" style="height:300px;">
+                        <dtitle>Lluvia</dtitle>
+                        <hr>
+                        <div class="thumbnail">
+                            <div class="intro-icons"><i class="wi wi-hail"></i></div>
+                            <div class="text-temp"> LLUVIA</div>
+                            <div class="info-user">
+                                <span aria-hidden="true" class="fa fa-times" style="font-size: 70px; color: #DF3B3B"></span>
+                                <span aria-hidden="true" class="fa fa-check" style="font-size: 70px; color: #14FF53"></span>
+                            </div>                    
+                        </div>     
+                    </div>
+                </div>-->
+            </div>
+        </div>
+    </div>
+    <div class="copyright text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <div>Copyright © 2016-2017 <a href="https://www.facebook.com/Shahriyar.Ahmed.Sohel" target="_blank">SISMMOC</a> BY <a href="https://www.utmachala.edu.ec/">UTMACH</a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+        <% include AcercaDeNosotros.html %>
+        <% include servicios.html %>
+        <% include contactanos.html %>
+         
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqWevEbQKDZ6ThKE9QaiaqnO4JgecTS4E&callback=initMap" async defer></script>-->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqWevEbQKDZ6ThKE9QaiaqnO4JgecTS4E" async defer></script>
+<script type="text/javascript" src="js/angular/angular.min.js"></script>
+<script src="js/angular/angular.ng-modules.js"></script>
+<script type="text/javascript"> 
+var ubicacionEstaciones=[];
+var app = angular.module('appEstMeteorologicas',[]);
+app.controller('gestionEstMeteorologicas',function($scope, $http){ 
+    $scope.formData = {}; 
+    $scope.buscarEstMeteorologica={buscar: ""};
+    $scope.init=function(){
+        $scope.GetData();
+    }
+    var refresh = function(){
+      $http.get('/estMeteorologicasController')
+          .success(function(data) {
+              $scope.tipoUsuarioPermisos = data[data.length -2].tipo_usuario;
+              $scope.empresaUsuarioPermisos = data[data.length -1].tipo_usuario;
+              data.length = data.length - 2;
+              $scope.estMeteorologicas = data;
+              for (i = 0; i < $scope.estMeteorologicas.length; i++) { 
+               ubicacionEstaciones.push([data[i].est_latitud, data[i].est_longitud]);
+              }
+             // console.log(ubicacionEstaciones);
+              initMap();
+          })
+          .error(function(data) {
+              console.log('Error: ' + data);
+      });
+    }
+    refresh();
+}); 
+function initMap() {
+    console.log(ubicacionEstaciones);
+    var marcadores = ubicacionEstaciones;
+    var myLatlng = {lat: -1.4915563, lng: -78.3821154};
+    var map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 6,
+        center: myLatlng
+    });
+    var infowindow = new google.maps.InfoWindow();
+    var marker, i;
+    for (i = 0; i < marcadores.length; i++) { 
+        if(i==0){
+            marker = new google.maps.Marker({
+              position: new google.maps.LatLng(marcadores[i][0], marcadores[i][1]),
+              map: map             
+            });
+        }else{
+            marker = new google.maps.Marker({
+              position: new google.maps.LatLng(marcadores[i][0], marcadores[i][1]),
+              map: map,
+              icon: 'http://maps.google.com/mapfiles/ms/icons/green-dot.png'
+            });
+        }
+    }
+  /*  marker.addListener('click', function() {
+        window.alert(marker.getPosition());
+    });*/
+}
+
+</script>   
+</div>  
+</body>    
+</html>
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+<script src="js/jquery.appear.js"></script>
+<script src="js/contact_me.js"></script>
+<script src="js/jqBootstrapValidation.js"></script>
+<script src="js/modernizr.custom.js"></script>
+<script src="js/script.js"></script>
+<script src="js/jquery.circliful.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+<script src="js/RGraph.common.core.js"></script>
+<script src="js/RGraph.bar.js"></script>
+<script src="js/RGraph.thermometer.js"></script>
+<script src="js/RGraph.semicircularprogress.js"></script>
+<script src="js/RGraph.common.effects.js"></script>
+<script src="js/RGraph.vprogress.js"></script>
+<script src="js/RGraph.common.dynamic.js"></script>
+<script type="text/javascript" src="http://static.fusioncharts.com/code/latest/fusioncharts.js"></script>
+<script type="text/javascript" src="http://static.fusioncharts.com/code/latest/themes/fusioncharts.theme.fint.js?cacheBust=56"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script type="text/javascript">
+var socket = io();
+    window.onload = function ()
+    {
+        var vprogress = new RGraph.VProgress({
+            id: 'cvs',
+            min: 101000,
+            max: 102000,
+            value: 1005,
+            options: {
+                gutterRight:35,
+                textSize: 12,
+                tickmarks: 100,
+                numticks: 20,
+                unitsPost: ' Pa',
+                textAccessible: true,
+                scaleVisible: true,
+                textColor: 'white',
+                margin: 5,
+                colors: ['gradient(RoyalBlue)']
+            }
+        });
+        vprogress.grow(); 
+        socket.on('lecturaMote2', function (id, dato) {
+            if(parseInt(id.toString())==4){
+                vprogress.value = parseFloat(dato.toString());
+                vprogress.grow();
+            }
+        });        
+        /*setTimeout(function ()
+        {
+            vprogress.value = 1;
+            vprogress.grow();
+        }, 3500);*/
+        //var value = RGraph.random(0, 50)        
+        if (typeof thermometer == 'undefined') {
+            var thermometer = new RGraph.Thermometer({
+                id: 'cvsT',
+                min: 0,
+                max: 50,
+                value: 0,
+                options: {
+                    textAccessible: true,
+                    scaleVisible: true,
+                    unitsPost: '°C',
+                    textColor: 'white',
+                    labelColor: 'red',
+                    colors: ['gradient(RoyalBlue)']
+                }
+            });
+        } else {
+            thermometer.value = 0;
+        }
+        thermometer.grow();
+        socket.on('lecturaMote1', function (id, dato) {
+            if(parseInt(id.toString())==1){
+                document.getElementById('lablTemp').innerHTML =dato.toString()+" °C";
+                thermometer.value = parseFloat(dato.toString());
+                thermometer.grow();
+            }
+        });    
+        /*setTimeout(function ()
+        {
+            RGraph.clear(thermometer.canvas);
+            func();
+        }, 5000);*/
+        new RGraph.SemiCircularProgress ({
+        id: 'cvsL',
+        min: 0,
+        max: 100,
+        value: 79,
+        options: {
+            scaleDecimals: 1,
+            unitsPost: 'LX',
+            colors: ['gradient(RoyalBlue:blue)'],
+            textColor: 'white',
+            labelsCenterSize: 20
+            }
+        }).grow({frames: 30});
+        };
+</script>
+
+<script type="text/javascript">
+
+ $( document ).ready(function() { // 6,32 5,38 2,34
+        $("#test-circle").circliful({
+            animation: 1,
+            animationStep: 5,
+            foregroundBorderWidth: 15,
+            backgroundBorderWidth: 15,
+            percent: 68,
+            textSize: 28,
+            textStyle: 'font-size: 12px;',
+            textColor: '#666',
+            multiPercentage: 1,
+            percentages: [10, 20, 30]
+        });
+    });
+
+</script>

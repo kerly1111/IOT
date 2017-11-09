@@ -1,0 +1,292 @@
+<% include ../cabecera.html %> 
+<style>
+    .example-modal .modal {
+      background: transparent !important;
+    }
+  </style>
+    <!-- Main content -->
+    <section class="content" ng-app="appEstMeteorologicas">
+    <div ng-controller="gestionEstMeteorologicas">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="box box-primary">
+            <div class="box-header">     
+             <h2 class="box-title"><b>GESTIÓN DE ESTACIONES METEOROLÓGICAS </b></h2>
+
+              <div class="row col-md-9 col-md-offset-5">
+                <div class="col-xs-8">
+                  <div class="input-group">
+                    <span class="input-group-addon">Buscar: </span>
+                    <input type="text" class="form-control" placeholder="Buscar" ng-model="buscarEstMeteorologica.buscar" ng-keyup="buscarEst()">
+                    <span class="input-group-btn">
+                      <button type="button" class="btn btn-default btn-flat"><i class="fa fa-search" ></i></button>
+                    </span>
+                  </div>
+                </div>
+                <div class="col-xs-2">
+                    <button ng-if ="tipoUsuarioPermisos == 's'" type="button" class="btn btn-primary" ng-click="nuevoForm()" onclick="VerFormulario();"><i class="fa fa-plus" ></i>&nbsp;Nuevo</button>
+                </div>
+              </div>
+            </div>   
+            <div class="box-body box-primary">
+              <table id="tablausuarios" class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre</th>
+                  <th>Ciudad</th>
+                  <th>Dirección</th>
+                  <th>Latitud</th>
+                  <th>Longitud</th>
+                  <th>Empresa</th>
+                  <th></th>
+                  <th></th>
+                </tr>
+                </thead>
+                <tbody id="bodytablaestMeteorologicass">
+                <tr ng-repeat="estMeteorologica in estMeteorologicas | startFromGrid: currentPage * pageSize | limitTo: pageSize">
+                  <td>{{ estMeteorologica.est_id }}</td>
+                  <td>{{ estMeteorologica.est_nombre }}</td>
+                  <td>{{ estMeteorologica.est_ciudad }}</td>
+                  <td>{{ estMeteorologica.est_direccion }}</td>
+                  <td>{{ estMeteorologica.est_latitud }}</td>
+                  <td>{{ estMeteorologica.est_longitud }}</td>
+                  <td>{{ estMeteorologica.emp_nombre }}</td>
+                  <td ng-if ="tipoUsuarioPermisos != 'e'"><a data-toggle="tooltip" data-placement="top" title="Editar"><button class="btn btn-primary btn-xs" ng-click="CargarDatosEditar(estMeteorologica)" onClick="VerFormulario();" ><i class="fa  fa-edit fa-lar"></i></button></a></td>
+                  <td ng-if ="tipoUsuarioPermisos == 's'"><a data-toggle="tooltip" data-placement="top" title="Eliminar"><button class="btn btn-danger btn-xs" ng-click="eliminarEstMeteorologica(estMeteorologica)" onclick="mensajeConfirmacion();"><i class="fa  fa-trash fa-lar"></i></button></a></td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class=" text-center">
+              <!-- Navegar hacia atrás -->
+              <button class="btn btn-primary " type='button' ng-disabled='currentPage <= 0' ng-click='currentPage = currentPage - 1'><i class="fa  fa-backward fa-lar"></i></button>
+              <div class="btn-group">
+              <!-- Navegar a una página especifica-->
+              <button class="btn btn-primary  " type='button' ng-disabled='currentPage == page.no - 1' ng-click='setPage(page.no)' ng-repeat='page in pages'>{{page.no}}</button>
+              </div>
+              <!-- Navegar hacia adelante -->
+               <button class="btn btn-primary " type='button' ng-disabled='currentPage >= estMeteorologicas.length/pageSize - 1' ng-click='currentPage = currentPage + 1'><i class="fa fa-forward fa-lar"></i></button>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+      <div class="example-modal ">
+        <div class="modal " id="mensajeConfirmacion">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">ESTACIÓN METEOROLÓGICA</h4>
+              </div>
+              <div class="modal-body">
+                <form role="form">
+                    <label>¿Estas seguro que deseas eliminar este estación meteorológica?</label>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger " data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="guardarEstMeteorologica()" data-dismiss="modal">Aceptar</button>
+              </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="example-modal ">
+        <div class="modal " id="modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">ESTACIÓN METEOROLÓGICA</h4>
+              </div>
+              <div class="modal-body">
+                <form role="form" name="frm" id"frm">
+                <div class="form-group has-feedback" ng-class="{'has-error': frm.IdNomrbre.$invalid && frm.IdNomrbre.$error.username,'has-success': frm.IdNomrbre.$valid}">
+                  <label>Nomrbre</label>
+                  <input type="text" class="form-control" minlength="5" onKeyPress="return nameVal(event)" onbeforepaste="fnBeforePaste()" onpaste="fnPaste()"  onKeyUp="this.value = this.value.toUpperCase();" onBlur="this.value = this.value.toUpperCase();" placeholder="Nomrbre" id="IdNomrbre" name="IdNomrbre" ng-model="newEstMeteorologica.est_nombre" ng-required="true" username>
+                  <span ng-if="frm.IdNomrbre.$invalid  && frm.IdNomrbre.$error.username" class="glyphicon glyphicon-remove form-control-feedback"></span> <span ng-if="frm.IdNomrbre.$valid" class="fa fa-check form-control-feedback"></span>
+                  <span ng-show="frm.IdNomrbre.$pending.username" class="help-block">Comprobando si este nombre está disponible...</span>
+                <span ng-show="frm.IdNomrbre.$error.username" class="help-block">¡Esta estación meteorológica ya se encuentra registrada!</span>
+                </div>
+                <div class="form-group has-feedback" ng-class="{'has-error': frm.IdCiudad.$invalid && frm.IdCiudad.$touched}">
+                  <label>Ciudad</label>
+                  <input type="text" ng-required="true" onbeforepaste="fnBeforePaste()" onpaste="fnPaste()" onKeyPress="return soloLetras(event)" onKeyUp="this.value = this.value.toUpperCase();" class="form-control" placeholder="Ciudad"  id="IdCiudad" name="IdCiudad" ng-model="newEstMeteorologica.est_ciudad">
+                  <span ng-if="frm.IdCiudad.$invalid && frm.IdCiudad.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                  <span ng-show="frm.IdCiudad.$invalid && frm.IdCiudad.$touched" class="help-block">Campo Obligatorio</span>
+                </div>
+                <div class="form-group has-feedback" ng-class="{'has-error': frm.IdDireccion.$invalid && frm.IdDireccion.$touched}">
+                  <label>Dirección</label>
+                    <input type="text" onKeyPress="return dirVal(event)" class="form-control" onKeyUp="this.value = this.value.toUpperCase();" onbeforepaste="fnBeforePaste()" onpaste="fnPaste()" placeholder="Dirección" id="IdDireccion" name="IdDireccion" ng-model="newEstMeteorologica.est_direccion" ng-required="true">
+                    <span ng-if="frm.IdDireccion.$invalid && frm.IdDireccion.$touched" class="glyphicon glyphicon-remove form-control-feedback"></span>
+                  <span ng-show="frm.IdDireccion.$invalid && frm.IdDireccion.$touched" class="help-block">Campo Obligatorio</span>
+                </div>
+                <div class="form-group col-md-6 has-feedback" ng-class="{'has-error': frm.IdLatitud.$invalid && frm.IdLatitud.$touched}">
+                  <label>Latitud</label>
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa  fa-map-marker"></i></span>
+                    <input type="text" class="form-control" placeholder="Latitud" id="IdLatitud" name="IdLatitud" ng-model="newEstMeteorologica.est_latitud"  disabled="true">
+                  </div>
+                </div>
+                <div class="form-group col-md-6 has-feedback" ng-class="{'has-error': frm.IdLongitud.$invalid && frm.IdLongitud.$touched}">
+                  <label>Longitud</label>
+                  <div class="input-group">
+                    <span class="input-group-addon"><i class="fa  fa-map-marker"></i></span>
+                    <input type="text" class="form-control" placeholder="Longitud" id="IdLongitud" name="IdLongitud" ng-model="newEstMeteorologica.est_longitud" disabled="true">
+                  </div>
+                </div>
+                <span ng-show="frm.est_longitud.$invalid && frm.est_longitud.$touched && frm.IdLatitud.$invalid && frm.IdLatitud.$touched" class="help-block">Campo Obligatorio</span>
+                <div class="form-group">
+                  <div id="map" style=" width: 570px; height: 300px;"></div>
+                </div>
+                <div class="form-group has-feedback" ng-controller="gestionEmpresas" ng-class="{'has-error': newEstMeteorologica.emp_id == '- Ninguno -' && frm.IdEmpresas.$touched}">
+                  <label>Empresa</label>
+                  <select class="form-control" style="width: 100%;" id="IdEmpresas" name="IdEmpresas" ng-model="newEstMeteorologica.emp_id" required="true">
+                    <option>- Ninguno -</option>
+                    <option ng-repeat="empresa in empresas" value="{{ empresa.emp_id }}" >{{ empresa.emp_nombre }}</option>
+                  </select>
+                  <span ng-show="newEstMeteorologica.emp_id == '- Ninguno -'  && frm.IdEmpresas.$touched" class="help-block">Seleccione una empresa</span>
+                </div>
+              </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal" >Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="guardarEstMeteorologica()" data-dismiss="modal" ng-disabled="frm.$invalid || frm.IdNomrbre.$invalid || frm.IdCiudad.$invalid || frm.IdDireccion.$invalid || newEstMeteorologica.emp_id == '- Ninguno -'">Guardar</button>
+              </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+      </section>
+
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="js/controllers/estMeteorologicaController.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqWevEbQKDZ6ThKE9QaiaqnO4JgecTS4E&callback=initMap" async defer></script>
+<% include ../../views/piePagina.html %> 
+<script type="text/javascript">
+  function nameVal(e) {
+    key = e.keyCode || e.which;
+       tecla = String.fromCharCode(key).toLowerCase();
+       letras = " áéíóúabcdefghijklmnñopqrstuvwxyz1234567890";
+       especiales = "8-37-39-46";
+
+       tecla_especial = false
+       for(var i in especiales){
+            if(key == especiales[i]){
+                tecla_especial = true;
+                break;
+            }
+        }
+
+        if(letras.indexOf(tecla)==-1 && !tecla_especial){
+            return false;
+        }
+  }
+    function dirVal(e) {
+    key = e.keyCode || e.which;
+       tecla = String.fromCharCode(key).toLowerCase();
+       letras = " áéíóúabcdefghijklmnñopqrstuvwxyz1234567890-/";
+       especiales = "8-37-39-46";
+
+       tecla_especial = false
+       for(var i in especiales){
+            if(key == especiales[i]){
+                tecla_especial = true;
+                break;
+            }
+        }
+
+        if(letras.indexOf(tecla)==-1 && !tecla_especial){
+            return false;
+        }
+  }
+function fnPaste() {
+      event.returnValue = false;
+      oTarget.value = window.clipboardData.getData("Text", sNewString);
+  }
+  function fnBeforePaste() {
+    event.returnValue = false;
+  }
+  function soloLetras(e){
+       key = e.keyCode || e.which;
+       tecla = String.fromCharCode(key).toLowerCase();
+       letras = " áéíóúabcdefghijklmnñopqrstuvwxyz";
+       especiales = "8-37-39-46";
+
+       tecla_especial = false
+       for(var i in especiales){
+            if(key == especiales[i]){
+                tecla_especial = true;
+                break;
+            }
+        }
+
+        if(letras.indexOf(tecla)==-1 && !tecla_especial){
+            return false;
+        }
+    }
+  var map;
+  var markers = [];
+  function initMap() {
+    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 6,
+      center: {lat: -1.4915563, lng: -78.3821154 }
+    });
+
+    map.addListener('click', function(e) {
+      deleteMarkers();
+      addMarker(e.latLng, map);
+    });
+  }
+  function addMarker(location, map) {
+    var marker = new google.maps.Marker({
+      position: location,
+      map: map
+    });
+    markers.push(marker);
+    var conversionValores=location.toString();
+    var valores = conversionValores.split(",");
+    document.frm.IdLatitud.value = valores[0].substr(1);
+    document.frm.IdLongitud.value = valores[1].substr(1,valores[1].length-2);
+  }
+  function deleteMarkers() {
+    clearMarkers();
+    markers = [];
+  }
+  function clearMarkers() {
+    setMapOnAll(null);
+  }
+  function setMapOnAll(map) {
+    for (var i = 0; i < markers.length; i++) {
+      markers[i].setMap(map);
+    }
+  }
+
+  function VerFormulario(latitud, longitud){
+    $('#modal').modal('show' , function () {
+      var mapNode = map.getDiv();
+      $('#map').append();
+    });
+    initMap();
+      //   window.alert(document.frmEstMeteorologica.IdLatitud.value+" - "+ document.frmEstMeteorologica.IdLongitud.value);
+  } 
+  function mensajeConfirmacion(){
+    $('#mensajeConfirmacion').modal('show');
+  } 
+</script>
+<script>  
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+  });
+  $(function () {
+   $(".select2").select2();
+  });
+</script>
+

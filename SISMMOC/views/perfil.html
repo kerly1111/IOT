@@ -1,0 +1,156 @@
+<% include ../views/cabecera.html %> 
+
+<div class="container" ng-app="appUsuarios">
+<div ng-controller="gestionUsuarios">
+	<div class="row" ng-controller="perfilUsuario">
+		<div class="col-md-5  toppad  pull-right col-md-offset-3 ">
+		<br>
+		</div>
+        <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-xs-offset-0 col-sm-offset-0 col-md-offset-3 col-lg-offset-3 toppad" >
+          	<div class="panel panel-info" ng-repeat="perfilUser in perfilUsers">
+           		<div class="panel-heading">
+              		<h3 class="panel-title">USUARIO</h3>
+            	</div>
+            <div class="panel-body">
+              	<div class="row">
+                	<div class="col-md-3 col-lg-3 " align="center"> 
+                    <img ng-if="perfilUser.usu_foto == null" alt="User Pic" class="img-circle img-responsive" src="imagenes/users/user2.png">
+                    <img ng-if="perfilUser.usu_foto != null" alt="User Pic" class="img-circle img-responsive" ng-src="imagenes/users/{{ perfilUser.usu_foto }}"> </div>
+	                <div class=" col-md-9 col-lg-9 "> 
+	                  <table class="table table-user-information"> 
+	                    <tbody>
+		                  	<tr>
+		                    	<td>USERNAME:</td>
+		                    	<td>{{ perfilUser.usu_username }}</td>
+		                  	</tr>
+	                      	<tr>
+	                        	<td>NOMBRES:</td>
+	                       		<td>{{ perfilUser.usu_nombre }}</td>
+	                      	</tr>
+	                      	<tr>
+	                        	<td>APELLIDOS:</td>
+	                        	<td>{{ perfilUser.usu_apellido }}</td>
+	                      	</tr>
+	                        <tr>
+	                        	<td>TIPO:</td>
+	                        	<td ng-if="perfilUser.usu_tipo == 's'">SuperAdmin</td>
+                  				<td ng-if="perfilUser.usu_tipo == 'a'">Administrador</td>
+                  				<td ng-if="perfilUser.usu_tipo == 'e'">Ejecutivo</td>
+	                      	</tr>
+	                        <tr>
+	                        	<td>EMPRESA:</td>
+	                        	<td>{{ perfilUser.emp_nombre }}</td>
+	                      	</tr>
+	                      	<tr>
+	                        	<td>EMAIL:</td>
+	                        	<td>{{ perfilUser.usu_correo }}</td>
+	                      	</tr>                                               
+	                    </tbody>
+	                  </table>                 
+	                </div>
+            	</div>
+            </div>
+			<div class="panel-footer">
+				<a onclick="cambiarContrasena()" data-original-title="Cambiar Contraseña" ng-click="NewFormCambiarPass(perfilUser)" data-toggle="tooltip" type="button" class="btn btn-primary"><i class="fa fa-lock"></i>&nbsp;
+				Cambiar Contraseña</a>
+			    <span class="pull-right">
+			        <a onclick="VerFormulario()" ng-if="perfilUser.usu_tipo != 's'" ng-click="CargarDatosEditarPerfil(perfilUser)" data-original-title="Editar Usuario" data-toggle="tooltip" type="button" class="btn btn-primary"><i class="fa  fa-edit"></i>&nbsp;
+			        Editar Usuario</a>
+			    </span>
+			</div>
+          	</div>
+        </div>
+        <div class="example-modal ">
+        <div class="modal " id="modal">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">USUARIO</h4>
+              </div>
+              <div class="modal-body">
+                <form role="form">
+                <div class="form-group">
+                  <label>Username</label>
+                  <input type="text" class="form-control" placeholder="Username" id="IdUsername" ng-model="newUsuarios.usu_username">
+                </div>
+                <div class="form-group">
+                  <label>Nombres</label>
+                  <input type="text" class="form-control" placeholder="Nombres" id="IdNombres" ng-model="newUsuarios.usu_nombre">
+                </div>
+                <div class="form-group">
+                  <label>Apellidos</label>
+                  <input type="text" class="form-control" placeholder="Apellidos" id="IdApellidos" ng-model="newUsuarios.usu_apellido">
+                </div>
+                <div class="form-group">
+                  <label>E-mail</label>
+                  <div class="input-group">
+                    <input type="text" class="form-control" placeholder="E-mail" id="IdEmail" ng-model="newUsuarios.usu_correo">
+                    <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="exampleInputFile">Foto</label>
+                  <input type="file" id="IdFoto" accept="image/x-png, image/jpeg" file-model="newUsuarios.usu_foto">
+                  <!-- <input type="file" id="IdFoto" accept="image/x-png, image/jpeg"  onchange="angular.element(this).scope().file_changed(this)">-->
+                  <p class="help-block">Tamaño máximo para imagenes: 2Mb</p>
+                </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger " data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="guardarPerfil()" data-dismiss="modal">Guardar</button>
+              </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="example-modal ">
+        <div class="modal " id="fomPassword">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">USUARIO</h4>
+              </div>
+              <div class="modal-body">
+                <form role="form" name="frmPass">
+           <!--     	<div class="form-group">
+                  		<label>Contraseña Actual</label>
+                  		<input type="password" class="form-control" placeholder="Password" id="IdPasswdActual" name="IdPasswdActual" ng-model="newUsuarios.passActual" required="true">
+                	</div>-->
+                  	<div class="form-group">
+                  		<label>Nueva Contraseña</label>
+                  		<input type="password" class="form-control" placeholder="Password" id="IdNewPasswd" name="IdNewPasswd" ng-model="newUsuarios.passNew" required="true">
+                	</div>
+                	<div class="form-group">
+                  		<label>Confirmar Nueva Contraseña</label>
+                  		<input type="password" class="form-control" placeholder="Password" id="IdConfirmarNewPasswd" name="IdConfirmarNewPasswd" ng-model="newUsuarios.PassConfirm" required="true">
+                      <span ng-show="newUsuarios.passNew != newUsuarios.PassConfirm && frmPass.IdConfirmarNewPasswd.$touched" class="help-block">Las password no coinciden</span>
+                	</div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-danger " data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" ng-click="cambiarPasword()" data-dismiss="modal" ng-disabled="frmPass.IdPasswdActual.$invalid || frmPass.IdNewPasswd.$invalid || frmPass.IdConfirmarNewPasswd.$invalid || newUsuarios.passNew != newUsuarios.PassConfirm">Aceptar</button>
+              </div> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+</div>
+<script type="text/javascript" src="js/angular/angular.min.js"></script>
+<script type="text/javascript" src="js/controllers/usuariosController.js"></script>
+<script type="text/javascript">
+  function VerFormulario(){
+    $('#modal').modal('show');
+  } 
+  function cambiarContrasena(){
+    $('#fomPassword').modal('show');
+  } 
+</script>
+<% include ../views/piePagina.html %> 

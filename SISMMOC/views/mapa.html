@@ -1,0 +1,37 @@
+ 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDqWevEbQKDZ6ThKE9QaiaqnO4JgecTS4E&callback=initMap" async defer></script>
+<script type="text/javascript">  
+ function initMap() {
+  var mapDiv = document.getElementById('map');
+  var map = new google.maps.Map(mapDiv, {
+    zoom: 8,
+    center: new google.maps.LatLng(-34.397, 150.644)
+  });
+  // We add a DOM event here to show an alert if the DIV containing the
+  // map is clicked.
+  google.maps.event.addDomListener(mapDiv, 'click', function() {
+    window.alert('Map was clicked!');
+  });
+}  
+</script>  
+<div class="section-modal modal fade" id="mapa-modal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-content">
+                <div class="close-modal" data-dismiss="modal">
+                    <div class="lr">
+                        <div class="rl">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="container">
+                    <div class="row">
+                        <div class="section-title text-center">
+                            <h3>Ubicación Estaciones Meteorológicas</h3>
+                            <div id="map" style="width:600px; height:600px">  
+                         <!--   <p>Duis aute irure dolor in reprehenderit in voluptate</p>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>  
+</div>  
